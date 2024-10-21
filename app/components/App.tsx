@@ -2,7 +2,6 @@
 
 import { useEffect, useRef, useState } from "react";
 import {
-  LiveConnectionState,
   LiveTranscriptionEvent,
   LiveTranscriptionEvents,
   useDeepgram,
@@ -21,8 +20,8 @@ const App: () => JSX.Element = () => {
   const { connection, connectToDeepgram, connectionState } = useDeepgram();
   const { setupMicrophone, microphone, startMicrophone, microphoneState } =
     useMicrophone();
-  const captionTimeout = useRef<any>();
-  const keepAliveInterval = useRef<any>();
+  const captionTimeout = useRef<NodeJS.Timeout>();
+  const keepAliveInterval = useRef<NodeJS.Timeout>();
 
   useEffect(() => {
     setupMicrophone();
@@ -73,7 +72,7 @@ const App: () => JSX.Element = () => {
       }
     };
 
-    if (connectionState === LiveConnectionState.OPEN) {
+    if (connectionState === "OPEN") {
       connection.addListener(LiveTranscriptionEvents.Transcript, onTranscript);
       microphone.addEventListener(MicrophoneEvents.DataAvailable, onData);
 
@@ -94,7 +93,7 @@ const App: () => JSX.Element = () => {
 
     if (
       microphoneState !== MicrophoneState.Open &&
-      connectionState === LiveConnectionState.OPEN
+      connectionState === "OPEN"
     ) {
       connection.keepAlive();
 
